@@ -1,0 +1,4 @@
+debian/tmp/usr/lib/x86_64-linux-gnu/libkmsmnscmoduleimpl.so.0
+debian/tmp/usr/lib/x86_64-linux-gnu/libkmsmnscmoduleimpl.so.0.0.1~0.g3acb882
+debian/tmp/usr/lib/x86_64-linux-gnu/gstreamer-1.5/libmnscmodule.so
+debian/tmp/usr/lib/x86_64-linux-gnu/kurento/modules/libkmsmnscmodulemodule.so

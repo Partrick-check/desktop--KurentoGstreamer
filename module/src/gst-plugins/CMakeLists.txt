@@ -1,0 +1,30 @@
+include_directories(
+  ${GSTREAMER_INCLUDE_DIRS}
+  ${GSTREAMER_VIDEO_INCLUDE_DIRS}
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${OPENCV_INCLUDE_DIRS}
+)
+
+set(MNSCMODULE_SOURCES
+  mnscmodule.c
+  gstmnscmodule.h
+  gstmnscmodule.cpp
+)
+
+add_library(mnscmodule MODULE ${MNSCMODULE_SOURCES})
+if(SANITIZERS_ENABLED)
+  add_sanitizers(mnscmodule)
+endif()
+
+target_link_libraries(mnscmodule
+  ${GSTREAMER_LIBRARIES}
+  ${GSTREAMER_VIDEO_LIBRARIES}
+  ${OPENCV_LIBRARIES}
+)
+
+install(
+  TARGETS mnscmodule
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_GST_PLUGINS_DIR}
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)

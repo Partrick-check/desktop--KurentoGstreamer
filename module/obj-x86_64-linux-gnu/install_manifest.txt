@@ -1,0 +1,12 @@
+/usr/lib/x86_64-linux-gnu/libkmsmnscmoduleinterface.a
+/usr/include/kurento/modules/mnscmodule/mnscmodule.hpp
+/usr/lib/x86_64-linux-gnu/pkgconfig/kmsmnscmodule.pc
+/usr/lib/x86_64-linux-gnu/libkmsmnscmoduleimpl.so.0.0.1~0.g3acb882
+/usr/lib/x86_64-linux-gnu/libkmsmnscmoduleimpl.so.0
+/usr/lib/x86_64-linux-gnu/libkmsmnscmoduleimpl.so
+/usr/include/kurento/modules/mnscmodule/mnscmoduleImpl.hpp
+/usr/include/kurento/modules/mnscmodule/mnscmoduleImplFactory.hpp
+/usr/lib/x86_64-linux-gnu/kurento/modules/libkmsmnscmodulemodule.so
+/usr/share/cmake-3.10/Modules/FindKMSMNSCMODULE.cmake
+/usr/share/kurento/modules/mnscmodule.kmd.json
+/usr/lib/x86_64-linux-gnu/gstreamer-1.5/libmnscmodule.so

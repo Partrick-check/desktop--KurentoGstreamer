@@ -1,0 +1,2 @@
+/usr/bin/ar qc libkmsmnscmoduleinterface.a  CMakeFiles/kmsmnscmoduleinterface.dir/interface/generated-cpp/mnscmoduleInternal.cpp.o CMakeFiles/kmsmnscmoduleinterface.dir/interface/generated-cpp/mnscmodule.cpp.o
+/usr/bin/ranlib libkmsmnscmoduleinterface.a

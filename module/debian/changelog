@@ -1,0 +1,15 @@
+mnscmodule (0.0.1~rc1.18.04~20201231084003.gbp3acb88) UNRELEASED; urgency=medium
+
+  ** SNAPSHOT build @3acb88290fbf6506c0a3916254fc0a84e34d6d2e **
+
+  [ root ]
+  * UNRELEASED
+  * UNRELEASED
+
+ -- andrey <andrey@3ig.kiev.ua>  Thu, 31 Dec 2020 00:40:26 -0800
+
+mnscmodule (0.0.1~rc1) testing; urgency=medium
+
+  * Initial release.
+
+ -- Maintainer Name <maintainer.name@example.com>  Thu, 31 Dec 2020 00:35:13 -0800

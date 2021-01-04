@@ -1,0 +1,6 @@
+# Hashes of file build rules.
+12575f4b3289dde439af25845ab401ce src/server/cpp_interface.generated
+fc74b430e7ffe00ad905aca8eafca6cb src/server/cpp_interface_internal.generated
+e5c821a1f11848262e81cc8d77d06b43 src/server/cpp_module.generated
+c2a5f806f092a64da6c266c63e67b2aa src/server/cpp_server_internal.generated
+bf7f98bee71504d60db43559a36e97ab src/server/mnscmodule.kmd.json
