@@ -4,6 +4,9 @@ SRC2=2.avi
 SRC3=3.avi
 SRC4=4.avi
 
+gst-launch-1.0 filesrc location="$SRC1" ! decodebin ! autovideosink
+
+
 gst-launch-1.0 -vv -e videomixer name=mix background=2 \
         sink_0::alpha=1.0 \
         sink_0::ypos=0 \
