@@ -18,22 +18,16 @@ namespace module
 namespace mnscmodule
 {
 
-mnscmoduleImpl::mnscmoduleImpl (const boost::property_tree::ptree &config, std::shared_ptr<MediaPipeline> mediaPipeline) 
-    : FilterImpl (config, std::dynamic_pointer_cast<MediaObjectImpl> (mediaPipeline)) 
-{
-  // TO-DO: Add implementation here
-}
+mnscmoduleImpl::mnscmoduleImpl (const boost::property_tree::ptree &conf, std::shared_ptr<MediaPipeline> mediaPipeline) : 
+    HubImpl (conf, std::dynamic_pointer_cast<MediaObjectImpl> (mediaPipeline), FACTORY_NAME){}
 
-MediaObjectImpl *
-mnscmoduleImplFactory::createObject (const boost::property_tree::ptree &config, std::shared_ptr<MediaPipeline> mediaPipeline) const
-{
+MediaObjectImpl* mnscmoduleImplFactory::createObject (const boost::property_tree::ptree &config, std::shared_ptr<MediaPipeline> mediaPipeline) const{
   return new mnscmoduleImpl (config, mediaPipeline);
 }
 
 mnscmoduleImpl::StaticConstructor mnscmoduleImpl::staticConstructor;
 
-mnscmoduleImpl::StaticConstructor::StaticConstructor()
-{
+mnscmoduleImpl::StaticConstructor::StaticConstructor(){
   GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, GST_DEFAULT_NAME, 0,
                            GST_DEFAULT_NAME);
 }

@@ -36,17 +36,20 @@ namespace module
 namespace mnscmodule
 {
 
-class mnscmoduleImpl : public FilterImpl, public virtual mnscmodule
+class mnscmoduleImpl : public HubImpl, public virtual Composite
 {
 
 public:
 
-  mnscmoduleImpl (const boost::property_tree::ptree &config, std::shared_ptr<MediaPipeline> mediaPipeline);
+  CompositeImpl (const boost::property_tree::ptree &conf,
+                 std::shared_ptr<MediaPipeline> mediaPipeline);
 
-  virtual ~mnscmoduleImpl() = default;
+  virtual ~CompositeImpl () {};
 
   /* Next methods are automatically implemented by code generator */
-  virtual bool connect (const std::string &eventType, std::shared_ptr<EventHandler> handler);
+  virtual bool connect (const std::string &eventType,
+                        std::shared_ptr<EventHandler> handler);
+
   virtual void invoke (std::shared_ptr<MediaObjectImpl> obj,
                        const std::string &methodName, const Json::Value &params,
                        Json::Value &response);

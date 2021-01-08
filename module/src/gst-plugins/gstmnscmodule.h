@@ -14,14 +14,12 @@ typedef struct _Gstmnscmodule Gstmnscmodule;
 typedef struct _GstmnscmoduleClass GstmnscmoduleClass;
 typedef struct _GstmnscmodulePrivate GstmnscmodulePrivate;
 
-struct _Gstmnscmodule
-{
+struct _Gstmnscmodule{
   GstVideoFilter base;
   GstmnscmodulePrivate *priv;
 };
 
-struct _GstmnscmoduleClass
-{
+struct _GstmnscmoduleClass{
   GstVideoFilterClass base_mnscmodule_class;
 };
 
