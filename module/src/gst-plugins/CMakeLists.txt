@@ -5,25 +5,27 @@ include_directories(
   ${OPENCV_INCLUDE_DIRS}
 )
 
-set(MNSCMODULE_SOURCES
-  mnscmodule.c
-  gstmnscmodule.h
-  gstmnscmodule.cpp
+set(MNSCMIXER_SOURCES
+  mnscmixer.c
+  gstmnscmixer.h
+  gstmnscmixer.c
 )
 
-add_library(mnscmodule MODULE ${MNSCMODULE_SOURCES})
+add_library(mnscmixer MODULE ${MNSCMIXER_SOURCES})
 if(SANITIZERS_ENABLED)
-  add_sanitizers(mnscmodule)
+  add_sanitizers(mnscmixer)
 endif()
 
-target_link_libraries(mnscmodule
+target_link_libraries(mnscmixer
+  kmssdpagent
+  kmsgstcommons
   ${GSTREAMER_LIBRARIES}
   ${GSTREAMER_VIDEO_LIBRARIES}
   ${OPENCV_LIBRARIES}
 )
 
 install(
-  TARGETS mnscmodule
+  TARGETS mnscmixer
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   LIBRARY DESTINATION ${CMAKE_INSTALL_GST_PLUGINS_DIR}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}

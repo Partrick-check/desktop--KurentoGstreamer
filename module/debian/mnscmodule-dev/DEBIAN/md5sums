@@ -1,8 +1,0 @@
-9dc1824bc9a30fda692cd48b8a034fb4  usr/include/kurento/modules/mnscmodule/mnscmodule.hpp
-5c78627a563c28a37020833795c159e2  usr/include/kurento/modules/mnscmodule/mnscmoduleImpl.hpp
-766bc4a12ef3aa580b038b6f3ff5bd23  usr/include/kurento/modules/mnscmodule/mnscmoduleImplFactory.hpp
-7526be1ba796c1099c3356e3726cf9d5  usr/lib/x86_64-linux-gnu/pkgconfig/kmsmnscmodule.pc
-cdc49e9a0474db942832df07fa1f0e43  usr/share/cmake-3.10/Modules/FindKMSMNSCMODULE.cmake
-9620f4a00591442d22ae670533b0f2f5  usr/share/doc/mnscmodule-dev/changelog.gz
-d41d8cd98f00b204e9800998ecf8427e  usr/share/doc/mnscmodule-dev/copyright
-71b133fc9fcaad97e2ece3ce2d44589d  usr/share/kurento/modules/mnscmodule.kmd.json

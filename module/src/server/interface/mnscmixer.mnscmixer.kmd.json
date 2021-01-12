@@ -1,0 +1,38 @@
+{
+    "remoteClasses": [
+        {
+            "name": "mnscmixer",
+            "extends": "Hub",
+            "doc": "mnscmixer interface. Documentation about the module",
+            "constructor": {
+                "doc": "Create an element",
+                "params": [
+                    {
+                        "name": "mediaPipeline",
+                        "doc": "the parent :rom:cls:`MediaPipeline`",
+                        "type": "MediaPipeline"
+                    }
+                ]
+            },
+            "methods": [
+                {
+                    "name": "focus",
+                    "doc": ".",
+                    "params": [
+                        {
+                            "name": "sink_id",
+                            "doc": "Source port to be connected",
+                            "type": "int"
+                        },
+                        {
+                            "name": "param",
+                            "doc": "Source port to be connected",
+                            "type": "int"
+                        }
+
+                    ]
+                }
+            ]
+        }
+    ]
+}

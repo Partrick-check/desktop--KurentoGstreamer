@@ -1,5 +1,5 @@
-#ifndef __MNSCMODULE_CONFIG_H__
-#define __MNSCMODULE_CONFIG_H__
+#ifndef __MNSCMIXER_CONFIG_H__
+#define __MNSCMIXER_CONFIG_H__
 
 /* Version */
 #cmakedefine VERSION "@VERSION@"
@@ -13,4 +13,4 @@
 /* Library installation directory */
 #cmakedefine KURENTO_MODULES_SO_DIR "@KURENTO_MODULES_SO_DIR@"
 
-#endif /* __MNSCMODULE_CONFIG_H__ */
+#endif /* __MNSCMIXER_CONFIG_H__ */

@@ -1,3 +1,0 @@
-/home/andrey/progs/upwork/Kurento_compizite_module/test/CMakeFiles/rebuild_cache.dir
-/home/andrey/progs/upwork/Kurento_compizite_module/test/CMakeFiles/gstreamer_01.dir
-/home/andrey/progs/upwork/Kurento_compizite_module/test/CMakeFiles/edit_cache.dir

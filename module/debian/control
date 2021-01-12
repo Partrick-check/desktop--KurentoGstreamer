@@ -1,4 +1,4 @@
-Source: mnscmodule
+Source: mnscmixer
 Priority: optional
 Maintainer: Maintainer Name <maintainer.name@example.com>
 Build-Depends: debhelper (>= 9),
@@ -12,7 +12,7 @@ Build-Depends: debhelper (>= 9),
 Standards-Version: 4.0.0
 Homepage: https://www.example.com
 
-Package: mnscmodule
+Package: mnscmixer
 Architecture: any
 Section: libs
 Depends: ${shlibs:Depends},
@@ -20,10 +20,10 @@ Depends: ${shlibs:Depends},
 Description: Single line synopsis
  Extended description over several lines.
 
-Package: mnscmodule-dev
+Package: mnscmixer-dev
 Architecture: any
 Section: libdevel
-Depends: mnscmodule (= ${binary:Version}),
+Depends: mnscmixer (= ${binary:Version}),
  kms-core-dev,
  kms-elements-dev,
  kms-filters-dev,

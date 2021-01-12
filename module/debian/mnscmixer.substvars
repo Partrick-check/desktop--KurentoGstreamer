@@ -1,0 +1,3 @@
+shlibs:Depends=kms-core, kms-jsonrpc, kmsjsoncpp, libc6 (>= 2.14), libgcc1 (>= 1:3.0), libglib2.0-0 (>= 2.37.3), libgstreamer1.5-0 (>= 1.8.1), libstdc++6 (>= 5.2), mnscmixer
+misc:Depends=
+misc:Pre-Depends=

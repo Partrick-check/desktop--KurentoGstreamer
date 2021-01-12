@@ -1,0 +1,38 @@
+* requirements
+
+** server
+- KMS 6.15.0
+
+** client 
+- nodejs
+- npm
+
+* installing
+
+** server
+- install =mnscmixer_0.0.1~rc1.18.04~20210112195349.gbp5cc105_amd64.deb= from =module= folder
+- restart KMS
+
+*** check
+- type =/usr/bin/kurento-media-server --version= in terminal:
+
+correct output
+#+BEGIN_SRC
+Kurento Media Server version: 6.15.0
+Found modules:
+    'core' version 6.15.0
+    'elements' version 6.15.0
+    'filters' version 6.15.0
+    'mnscmixer' version 0.0.1~1.g5cc1057
+#+END_SRC
+
+** client
+#+BEGIN_SRC
+cd client
+npm install
+npm start
+#+END_SRC
+
+goto to =https://127.0.0.1:8080/= in browser
+
+NOTE: to add more source streams open =https://<client IP>:8080/= on other computer

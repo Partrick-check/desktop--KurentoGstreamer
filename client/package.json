@@ -1,19 +1,18 @@
 {
-  "name": "client",
-  "version": "6.15.1-dev",
+  "name": "kurento-composite-node-example",
+  "version": "5.1.1-dev",
   "private": true,
   "scripts": {
     "postinstall": "cd static && bower install"
   },
   "dependencies": {
-    "cookie-parser": "^1.3.5",
-    "express": "^4.17.0",
-    "express-session": "^1.17.0",
-    "minimist": "^1.1.1",
-    "ws": "^7.1.0",
-    "kurento-client": "git+https://github.com/Kurento/kurento-client-js.git"
+    "express": "~4.17.1",
+    "kurento-client": "6.9.0",
+    "kurento-module-mnscmixer": "git+https://github.com/mnaza/mnscmixer-js.git",
+    "minimist": "^1.1.0",
+    "ws": "~0.4.32"
   },
   "devDependencies": {
-    "bower": "^1.4.1"
+    "bower": "^1.3.12"
   }
 }

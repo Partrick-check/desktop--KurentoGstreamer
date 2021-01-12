@@ -1,0 +1,7 @@
+debian/tmp/usr/include/kurento/modules/mnscmixer/mnscmixer.hpp
+debian/tmp/usr/include/kurento/modules/mnscmixer/mnscmixerImpl.hpp
+debian/tmp/usr/include/kurento/modules/mnscmixer/mnscmixerImplFactory.hpp
+debian/tmp/usr/lib/x86_64-linux-gnu/libkmsmnscmixerimpl.so
+debian/tmp/usr/lib/x86_64-linux-gnu/pkgconfig/kmsmnscmixer.pc
+debian/tmp/usr/share/kurento/modules/mnscmixer.kmd.json
+debian/tmp/usr/share/cmake-3.10/Modules/FindKMSMNSCMIXER.cmake

@@ -1,15 +1,30 @@
-mnscmodule (0.0.1~rc1.18.04~20201231084003.gbp3acb88) UNRELEASED; urgency=medium
+mnscmixer (0.0.1~rc1.18.04~20210112195349.gbp5cc105) UNRELEASED; urgency=medium
 
-  ** SNAPSHOT build @3acb88290fbf6506c0a3916254fc0a84e34d6d2e **
+  ** SNAPSHOT build @5cc10571a527b3c0c5c229ad0b34d4f624a65008 **
 
   [ root ]
   * UNRELEASED
   * UNRELEASED
+  * UNRELEASED
 
- -- andrey <andrey@3ig.kiev.ua>  Thu, 31 Dec 2020 00:40:26 -0800
+  [ andrey ]
+  * aaa
 
-mnscmodule (0.0.1~rc1) testing; urgency=medium
+  [ root ]
+  * UNRELEASED
+  * UNRELEASED
+  * UNRELEASED
+  * UNRELEASED
+  * UNRELEASED
+  * UNRELEASED
+  * UNRELEASED
+  * UNRELEASED
+  * UNRELEASED
+
+ -- andrey <andrey@3ig.kiev.ua>  Tue, 12 Jan 2021 11:54:12 -0800
+
+mnscmixer (0.0.1~rc1) testing; urgency=medium
 
   * Initial release.
 
- -- Maintainer Name <maintainer.name@example.com>  Thu, 31 Dec 2020 00:35:13 -0800
+ -- Maintainer Name <maintainer.name@example.com>  Sun, 10 Jan 2021 07:37:38 -0800

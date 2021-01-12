@@ -1,6 +1,6 @@
 {
   "name": "kurento-utils",
-  "description": "Kurento JavaScript Utilities",
+  "description": "Kurento Utilities",
   "license": "Apache-2.0",
   "keywords": [
     "kurento",
@@ -48,14 +48,14 @@
     "Kurento <openvidu@gmail.com> (https://www.kurento.org)",
     "Kurento Community <kurento@googlegroups.com> (https://www.kurento.org)"
   ],
-  "version": "6.15.0",
-  "_release": "6.15.0",
+  "version": "6.9.0",
+  "_release": "6.9.0",
   "_resolution": {
     "type": "version",
-    "tag": "6.15.0",
-    "commit": "5ca360a68379ba6df8365188fcde8daad43768d6"
+    "tag": "6.9.0",
+    "commit": "8c4dbbe4266ebb0ff38deb3da5cde2172f44cfc2"
   },
   "_source": "https://github.com/Kurento/kurento-utils-bower.git",
-  "_target": "6.15.0",
+  "_target": "6.9.0",
   "_originalSource": "kurento-utils"
 }

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-project("mnscmodule")
+project("mnscmixer")
 message(STATUS "CMake project: ${PROJECT_NAME}")
 
 message("If KurentoHelpers is not found, you need to install 'kms-cmake-utils' from the Kurento repository")
@@ -51,7 +51,7 @@ pkg_check_modules(OPENCV REQUIRED opencv>=${OPENCV_REQUIRED})
 # Generate file "config.h"
 set(VERSION ${PROJECT_VERSION})
 set(PACKAGE ${PROJECT_NAME})
-set(GETTEXT_PACKAGE "mnscmodule")
+set(GETTEXT_PACKAGE "mnscmixer")
 include(GNUInstallDirs)
 set(CMAKE_INSTALL_GST_PLUGINS_DIR ${CMAKE_INSTALL_LIBDIR}/gstreamer-1.5)
 set(KURENTO_MODULES_SO_DIR ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/${KURENTO_MODULES_DIR_INSTALL_PREFIX})
