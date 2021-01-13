@@ -38,10 +38,10 @@ function nextUniqueId() {
  */
 
 var options =
-{
-  key:  fs.readFileSync('keys/server.key'),
-  cert: fs.readFileSync('keys/server.crt')
-};
+    {
+        key:  fs.readFileSync('keys/server.key'),
+        cert: fs.readFileSync('keys/server.crt')
+    };
 
 var port = app.get('port');
 
@@ -61,74 +61,74 @@ var wss = new WebSocketServer(
  * Management of WebSocket messages
  */
 wss.on('connection', function(ws)
-{
-    var sessionId = nextUniqueId();
+       {
+           var sessionId = nextUniqueId();
 
-    //console.log('Connection received with sessionId ' + sessionId);
+           //console.log('Connection received with sessionId ' + sessionId);
 
-    ws.on('error', function(error)
-    {
-        console.log('Connection ' + sessionId + ' error');
-        stop(sessionId);
-    });
+           ws.on('error', function(error)
+                 {
+                     console.log('Connection ' + sessionId + ' error');
+                     stop(sessionId);
+                 });
 
-    ws.on('close', function()
-    {
-        console.log('Connection ' + sessionId + ' closed');
-        stop(sessionId);
-    });
+           ws.on('close', function()
+                 {
+                     console.log('Connection ' + sessionId + ' closed');
+                     stop(sessionId);
+                 });
 
-    ws.on('message', function(_message)
-    {
-        var message = JSON.parse(_message);
-	    //console.log('message id',message.id);
-        //console.log('Connection ' + sessionId + ' received message ', message.id);
+           ws.on('message', function(_message)
+                 {
+                     var message = JSON.parse(_message);
+	                 //console.log('message id',message.id);
+                     //console.log('Connection ' + sessionId + ' received message ', message.id);
 
-        switch (message.id)
-        {
-            case 'client':
-                addClient(ws,sessionId, message.sdpOffer, function(error, sdpAnswer) {
-                    if (error) {
-                        return ws.send(JSON.stringify({
-                            id : 'response',
-                            response : 'rejected',
-                            message : error
-                        }));
-                    }
-                    ws.send(JSON.stringify({
-                        id : 'response',
-                        response : 'accepted',
-                        sdpAnswer : sdpAnswer
-                    }));
-                });
-                break;
+                     switch (message.id)
+                     {
+                         case 'client':
+                         addClient(ws,sessionId, message.sdpOffer, function(error, sdpAnswer) {
+                             if (error) {
+                                 return ws.send(JSON.stringify({
+                                     id : 'response',
+                                     response : 'rejected',
+                                     message : error
+                                 }));
+                             }
+                             ws.send(JSON.stringify({
+                                 id : 'response',
+                                 response : 'accepted',
+                                 sdpAnswer : sdpAnswer
+                             }));
+                         });
+                         break;
 
-            case 'stop':
-                stop(sessionId);
-                break;
+                         case 'stop':
+                         stop(sessionId);
+                         break;
 
-            case 'focus':
-                switchSource(message.sink_id, message.param, function(error) {
-                    ws.send(JSON.stringify({
-                        id : 'error',
-                        message : 'Invalid Ids ' + message
-                    }));
-                });
-                break;
+                         case 'focus':
+                         switchSource(message.sink_id, message.param, function(error) {
+                             ws.send(JSON.stringify({
+                                 id : 'error',
+                                 message : 'Invalid Ids ' + message
+                             }));
+                         });
+                         break;
 
-            case 'onIceCandidate':
-                onIceCandidate(sessionId, message.candidate);
-                break;
-        
-            default:
-                    ws.send(JSON.stringify({
-                        id : 'error',
-                        message : 'Invalid message ' + message
-                    }));
-                    break;
-        }
-    });
-});
+                         case 'onIceCandidate':
+                         onIceCandidate(sessionId, message.candidate);
+                         break;
+
+                         default:
+                         ws.send(JSON.stringify({
+                             id : 'error',
+                             message : 'Invalid message ' + message
+                         }));
+                         break;
+                     }
+                 });
+       });
 
 /*
  * Definition of functions
@@ -147,7 +147,7 @@ function getKurentoClient(callback) {
         if (error) {
             console.log("Coult not find media server at address " + ws_uri);
             return callback("Could not find media server at address" + ws_uri
-                + ". Exiting with error " + error);
+                            + ". Exiting with error " + error);
         }
         kurentoClient = _kurentoClient;
         callback(null, kurentoClient);
@@ -230,45 +230,43 @@ function createWebRtcEndPoint (callback) {
 
 // Add a webRTC client
 function addClient( ws, id, sdp, callback ) {
-
-
     createWebRtcEndPoint(function (error, _webRtcEndpoint) {
         if (error) {
             console.log("Error creating WebRtcEndPoint " + error);
             return callback(error);
         }
-    if (candidatesQueue[id]) {
-        while(candidatesQueue[id].length) {
-         var candidate = candidatesQueue[id].shift();
-                        _webRtcEndpoint.addIceCandidate(candidate);
-                    }
-    clients[id] = {
-        id: id,
-        webRtcEndpoint : null,
-        hubPort : null
-    }
-                }
+        if (candidatesQueue[id]) {
+            while(candidatesQueue[id].length) {
+                var candidate = candidatesQueue[id].shift();
+                _webRtcEndpoint.addIceCandidate(candidate);
+            }
+        }
+        clients[id] = {
+            id: id,
+            webRtcEndpoint : null,
+            hubPort : null
+        }
         clients[id].webRtcEndpoint = _webRtcEndpoint;
-            clients[id]. webRtcEndpoint.on('OnIceCandidate', function(event) {
+        clients[id]. webRtcEndpoint.on('OnIceCandidate', function(event) {
             var candidate = kurento.register.complexTypes.IceCandidate(event.candidate);
-                        ws.send(JSON.stringify({
-                            id : 'iceCandidate',
-                            candidate : candidate
-                        }));
-                    });
+            ws.send(JSON.stringify({
+                id : 'iceCandidate',
+                candidate : candidate
+            }));
+        });
 	    //console.log("sdp is ",sdp);
-            clients[id].webRtcEndpoint.processOffer(sdp, function(error, sdpAnswer) {
-                if (error) {
-                    stop(id);
-                    console.log("Error processing offer " + error);
-                    return callback(error);
-                }
-                callback( null, sdpAnswer);
-            });
-            clients[id].webRtcEndpoint.gatherCandidates(function(error) {
-                        if (error) {
-                            return callback(error);
-                        }
+        clients[id].webRtcEndpoint.processOffer(sdp, function(error, sdpAnswer) {
+            if (error) {
+                stop(id);
+                console.log("Error processing offer " + error);
+                return callback(error);
+            }
+            callback( null, sdpAnswer);
+        });
+        clients[id].webRtcEndpoint.gatherCandidates(function(error) {
+            if (error) {
+                return callback(error);
+            }
 		});
         createHubPort(function (error, _hubPort) {
             if (error) {
@@ -286,7 +284,7 @@ function addClient( ws, id, sdp, callback ) {
                     'id' : 'newSource',
                     'sourceId' : id
                 }));
-             });
+            });
         });
     });
 }
@@ -316,7 +314,7 @@ function stop(id) {
             mediaPipeline = null;
         }
     }
-   delete candidatesQueue[id];
+    delete candidatesQueue[id];
 }
 
 function onIceCandidate(sessionId, _candidate) {
