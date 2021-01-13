@@ -1,6 +1,6 @@
-mnscmixer (0.0.1~rc1.18.04~20210112195349.gbp5cc105) UNRELEASED; urgency=medium
+mnscmixer (0.0.1~rc1.18.04~20210113111508.gbp9967f4) UNRELEASED; urgency=medium
 
-  ** SNAPSHOT build @5cc10571a527b3c0c5c229ad0b34d4f624a65008 **
+  ** SNAPSHOT build @9967f42084e6e67b1d101c784f808532887bc06b **
 
   [ root ]
   * UNRELEASED
@@ -21,7 +21,10 @@ mnscmixer (0.0.1~rc1.18.04~20210112195349.gbp5cc105) UNRELEASED; urgency=medium
   * UNRELEASED
   * UNRELEASED
 
- -- andrey <andrey@3ig.kiev.ua>  Tue, 12 Jan 2021 11:54:12 -0800
+  [ andrey ]
+  * complete
+
+ -- andrey <andrey@3ig.kiev.ua>  Wed, 13 Jan 2021 03:15:32 -0800
 
 mnscmixer (0.0.1~rc1) testing; urgency=medium
 
