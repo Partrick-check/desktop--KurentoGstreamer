@@ -47,13 +47,16 @@ typedef struct _gst_mnscmixer_Data{
   gint id;
   Gstmnscmixer *mixer;
   GstElement* capsfilter;
-  GstElement* video_agnostic;
+  GstElement *videocrop;
+  GstElement *tee;
+  GstElement *fakesink;
   gboolean input;
   gboolean removing;
   gboolean eos_managed;
   gulong probe_id;
   gulong link_probe_id;
   gulong latency_probe_id;
+  GstPad *tee_sink_pad;
   GstPad *video_mixer_pad;
 } gst_mnscmixer_Data;
 
@@ -100,6 +103,12 @@ static void gst_mnscmixer_recalculate_sizes(gpointer data){
     if (port_data->input == FALSE) {
       continue;
     }
+    if(self->priv->n_elems == 2){
+      g_object_set (G_OBJECT(port_data->videocrop), "left", self->priv->output_width/4, "right", self->priv->output_width/4, NULL);
+    }
+    else{
+      g_object_set (G_OBJECT(port_data->videocrop), "left", 0, "right", 0, NULL);
+    }
     filtercaps = gst_caps_new_simple("video/x-raw", "width", G_TYPE_INT, width, "height", G_TYPE_INT, height, "pixel-aspect-ratio", GST_TYPE_FRACTION, 1, 1, NULL);
     g_object_set(port_data->capsfilter, "caps", filtercaps, NULL);
     gst_caps_unref(filtercaps);
@@ -140,6 +149,7 @@ static void gst_mnscmixer_recalculate_sizes_a(gpointer data){
     if (port_data->input == FALSE) {
       continue;
     }
+    g_object_set (G_OBJECT(port_data->videocrop), "left", 0, "right", 0, NULL);
     if(counter == (self->priv->focus -1)){
       filtercaps = gst_caps_new_simple("video/x-raw", "width", G_TYPE_INT, self->priv->output_width, "height", G_TYPE_INT, self->priv->output_height, "pixel-aspect-ratio", GST_TYPE_FRACTION, 1, 1, NULL);
       g_object_set(port_data->capsfilter, "caps", filtercaps, NULL);
@@ -177,20 +187,82 @@ static gboolean remove_elements_from_pipeline(gst_mnscmixer_Data* port_data){
     g_object_unref(port_data->video_mixer_pad);
     port_data->video_mixer_pad = NULL;
   }
-  gst_bin_remove_many(GST_BIN(self), g_object_ref(port_data->capsfilter), NULL);
+  gst_bin_remove_many(GST_BIN(self), g_object_ref(port_data->capsfilter), g_object_ref(port_data->tee), g_object_ref(port_data->fakesink), g_object_ref(port_data->videocrop), NULL);
+
   kms_base_hub_unlink_video_src(KMS_BASE_HUB (self), port_data->id);
   kms_base_hub_unlink_data_src(KMS_BASE_HUB (self), port_data->id);
   GST_MNSCMIXER_UNLOCK(self);
   gst_element_set_state(port_data->capsfilter, GST_STATE_NULL);
+  gst_element_set_state (port_data->tee, GST_STATE_NULL);
+  gst_element_set_state (port_data->fakesink, GST_STATE_NULL);
+  gst_element_set_state (port_data->videocrop, GST_STATE_NULL);
+
   g_object_unref(port_data->capsfilter);
+  g_object_unref (port_data->tee);
+  g_object_unref (port_data->videocrop);
+  g_object_unref (port_data->fakesink);
+  g_object_unref (port_data->tee_sink_pad);
+
+
+  port_data->tee_sink_pad = NULL;
   port_data->capsfilter = NULL;
+  port_data->tee = NULL;
+  port_data->fakesink = NULL;
+  port_data->videocrop = NULL;
+
   return G_SOURCE_REMOVE;
+}
+
+static GstPadProbeReturn cb_EOS_received(GstPad* pad, GstPadProbeInfo* info, gpointer data){
+  gst_mnscmixer_Data* port_data = (gst_mnscmixer_Data*)data;
+  Gstmnscmixer* self = port_data->mixer;
+
+  if (GST_EVENT_TYPE (gst_pad_probe_info_get_event (info)) != GST_EVENT_EOS) {
+    return GST_PAD_PROBE_OK;
+  }
+
+  GST_MNSCMIXER_LOCK (self);
+
+  if (!port_data->removing) {
+    port_data->eos_managed = TRUE;
+    GST_MNSCMIXER_UNLOCK (self);
+    return GST_PAD_PROBE_OK;
+  }
+
+  if (port_data->probe_id > 0) {
+    gst_pad_remove_probe(pad, port_data->probe_id);
+    port_data->probe_id = 0;
+  }
+
+  GST_MNSCMIXER_UNLOCK(self);
+
+  GstEvent* event = gst_event_new_eos();
+  gst_pad_send_event(pad, event);
+
+  kms_loop_idle_add_full(self->priv->loop, G_PRIORITY_DEFAULT, (GSourceFunc)remove_elements_from_pipeline, GST_MNSCMIXER_REF(port_data), (GDestroyNotify)kms_ref_struct_unref);
+  return GST_PAD_PROBE_OK;
+}
+
+static GstPadProbeReturn
+cb_latency (GstPad * pad, GstPadProbeInfo * info, gpointer data)
+{
+  if (GST_QUERY_TYPE (GST_PAD_PROBE_INFO_QUERY (info)) != GST_QUERY_LATENCY) {
+    return GST_PAD_PROBE_OK;
+  }
+
+  GST_LOG_OBJECT (pad, "Modifing latency query. New latency %" G_GUINT64_FORMAT,
+      (guint64) (LATENCY * GST_MSECOND));
+
+  gst_query_set_latency (GST_PAD_PROBE_INFO_QUERY (info),
+      TRUE, 0, LATENCY * GST_MSECOND);
+
+  return GST_PAD_PROBE_HANDLED;
 }
 
 static void gst_mnscmixer_port_data_destroy(gpointer data){
   gst_mnscmixer_Data *port_data = (gst_mnscmixer_Data*)data;
-  Gstmnscmixer *self = port_data->mixer;
-  GST_MNSCMIXER_LOCK (self);
+  Gstmnscmixer* self = port_data->mixer;
+  GST_MNSCMIXER_LOCK(self);
   port_data->removing = TRUE;
   kms_base_hub_unlink_video_sink(KMS_BASE_HUB (self), port_data->id);
   if(port_data->input){
@@ -230,20 +302,79 @@ static void gst_mnscmixer_port_data_destroy(gpointer data){
         kms_loop_idle_add_full(self->priv->loop, G_PRIORITY_DEFAULT, (GSourceFunc)remove_elements_from_pipeline, GST_MNSCMIXER_REF(port_data), (GDestroyNotify)kms_ref_struct_unref);
       }
     }
+    gst_element_unlink(port_data->videocrop, port_data->capsfilter);
+    gst_element_unlink(port_data->capsfilter, port_data->tee);
     g_object_unref(pad);
   } else {
     if(port_data->probe_id > 0){
       gst_pad_remove_probe(port_data->video_mixer_pad, port_data->probe_id);
     }
     if(port_data->latency_probe_id > 0){
-      gst_pad_remove_probe(port_data->video_mixer_pad, port_data->latency_probe_id);
+      gst_pad_remove_probe(port_data->tee_sink_pad, port_data->latency_probe_id);
     }
     GST_MNSCMIXER_UNLOCK (self);
+    gst_element_unlink(port_data->videocrop, port_data->capsfilter);
+    gst_element_unlink(port_data->capsfilter, port_data->tee);
+    gst_element_unlink(port_data->tee, port_data->fakesink);
+
     gst_bin_remove(GST_BIN(self), g_object_ref(port_data->capsfilter));
     gst_element_set_state(port_data->capsfilter, GST_STATE_NULL);
     g_object_unref(port_data->capsfilter);
     port_data->capsfilter = NULL;
+
+    gst_bin_remove(GST_BIN(self), g_object_ref(port_data->videocrop));
+    gst_element_set_state(port_data->videocrop, GST_STATE_NULL);
+    g_object_unref(port_data->videocrop);
+    port_data->videocrop = NULL;
+
+    gst_bin_remove(GST_BIN(self), g_object_ref(port_data->tee));
+    gst_element_set_state(port_data->tee, GST_STATE_NULL);
+    g_object_unref(port_data->tee);
+    port_data->tee = NULL;
+
+    gst_bin_remove(GST_BIN(self), g_object_ref(port_data->fakesink));
+    gst_element_set_state(port_data->fakesink, GST_STATE_NULL);
+    g_object_unref(port_data->fakesink);
+    port_data->fakesink = NULL;
   }
+}
+
+static GstPadProbeReturn link_to_videomixer(GstPad* pad, GstPadProbeInfo* info, gst_mnscmixer_Data* data){
+  if (GST_EVENT_TYPE(gst_pad_probe_info_get_event(info)) != GST_EVENT_STREAM_START) {
+    return GST_PAD_PROBE_PASS;
+  }
+
+  Gstmnscmixer* mixer = GST_MNSCMIXER(data->mixer);
+  GST_DEBUG("stream start detected %d", data->id);
+  GST_MNSCMIXER_LOCK(mixer);
+
+  data->link_probe_id = 0;
+  data->latency_probe_id = 0;
+
+  GstPadTemplate* sink_pad_template = gst_element_class_get_pad_template(GST_ELEMENT_GET_CLASS (mixer->priv->videomixer), "sink_%u");
+
+  if(G_UNLIKELY(sink_pad_template == NULL)){
+    GST_ERROR_OBJECT (mixer, "Error taking a new pad from videomixer");
+    GST_MNSCMIXER_UNLOCK (mixer);
+    return GST_PAD_PROBE_DROP;
+  }
+
+  data->input = TRUE;
+
+  data->video_mixer_pad = gst_element_request_pad(mixer->priv->videomixer, sink_pad_template, NULL, NULL);
+
+  GstPad* tee_src = gst_element_get_request_pad (data->tee, "src_%u");
+  gst_element_link_pads(data->tee, GST_OBJECT_NAME(tee_src), mixer->priv->videomixer, GST_OBJECT_NAME(data->video_mixer_pad));
+  g_object_unref(tee_src);
+
+  data->probe_id = gst_pad_add_probe(data->video_mixer_pad, GST_PAD_PROBE_TYPE_EVENT_DOWNSTREAM, (GstPadProbeCallback) cb_EOS_received, GST_MNSCMIXER_REF(data), (GDestroyNotify)kms_ref_struct_unref);
+  data->latency_probe_id = gst_pad_add_probe(data->video_mixer_pad, GST_PAD_PROBE_TYPE_QUERY_UPSTREAM, (GstPadProbeCallback)cb_latency, NULL, NULL);
+
+  mixer->priv->n_elems++;
+  gst_mnscmixer_recalculate_sizes_a(mixer);
+  gst_bin_recalculate_latency(GST_BIN(mixer));
+  GST_MNSCMIXER_UNLOCK (mixer);
+  return GST_PAD_PROBE_REMOVE;
 }
 
 static void release_gint(gpointer data){
@@ -270,38 +401,73 @@ static gst_mnscmixer_Data* gst_mnscmixer_port_data_create(Gstmnscmixer* mixer, g
   gst_mnscmixer_Data* data = create_gst_mnscmixer_data();
   data->mixer = mixer;
   data->id = id;
-  data->video_agnostic = gst_element_factory_make ("agnosticbin", NULL);
-  if(data->video_agnostic == NULL){
-    GST_ERROR("gst_mnscmixer_port_data_create2");
+
+  data->tee = gst_element_factory_make ("tee", NULL);
+  if(data->tee == NULL){
+    GST_ERROR("gst_mnscmixer_port_data_create tee creation");
   }
+
+  data->fakesink = gst_element_factory_make ("fakesink", NULL);
+  if(data->fakesink == NULL){
+    GST_ERROR("gst_mnscmixer_port_data_create fakesink creation");
+  }
+  g_object_set (G_OBJECT (data->fakesink), "async", FALSE, "sync", FALSE, NULL);
 
   data->capsfilter = gst_element_factory_make("capsfilter", NULL);
   if(data->capsfilter == NULL){
-    GST_ERROR("gst_mnscmixer_port_data_create3");
+    GST_ERROR("gst_mnscmixer_port_data_create capfilter creation");
   }
-
   GstCaps* filtercaps =  gst_caps_new_simple("video/x-raw", "width", G_TYPE_INT, mixer->priv->output_width, "height", G_TYPE_INT, mixer->priv->output_height, "pixel-aspect-ratio", GST_TYPE_FRACTION, 1, 1, NULL);
   g_object_set(data->capsfilter, "caps", filtercaps, NULL);
   gst_caps_unref(filtercaps);
 
-  gst_bin_add_many(GST_BIN (mixer), g_object_ref(data->video_agnostic),  g_object_ref(data->capsfilter), NULL);
-  gst_element_sync_state_with_parent (data->video_agnostic);
-  gst_element_sync_state_with_parent (data->capsfilter);
+  data->videocrop = gst_element_factory_make("videocrop", NULL);
+  if(data->capsfilter == NULL){
+    GST_ERROR("gst_mnscmixer_port_data_create videocrop creation");
+  }
+  g_object_set (G_OBJECT (data->videocrop), "left", 0, "right", 0, NULL);
 
-  gboolean res = kms_base_hub_link_video_sink (KMS_BASE_HUB(mixer), id, data->capsfilter, "sink", FALSE);
+  gst_bin_add_many(GST_BIN (mixer), g_object_ref(data->capsfilter), g_object_ref(data->videocrop), g_object_ref(data->tee), g_object_ref(data->fakesink), NULL);
+
+  gst_element_sync_state_with_parent (data->capsfilter);
+  gst_element_sync_state_with_parent (data->videocrop);
+  gst_element_sync_state_with_parent (data->tee);
+  gst_element_sync_state_with_parent (data->fakesink);
+
+  gboolean res = kms_base_hub_link_video_sink (KMS_BASE_HUB(mixer), id, data->videocrop, "sink", FALSE);
   if(!res){
     GST_ERROR("gst_mnscmixer_port_data_create5");
   }
 
-  data->video_mixer_pad = gst_element_get_request_pad(mixer->priv->videomixer, "sink_%u");
-  if(data->video_mixer_pad == NULL){
-    GST_ERROR("gst_mnscmixer_port_data_create9");
+  res = gst_element_link_pads(data->videocrop, NULL, data->capsfilter, NULL);
+  if(!res){
+    GST_ERROR("gst_mnscmixer_port_data_create connection capsfilter - videocrop");
   }
 
-  res = gst_element_link_pads(data->capsfilter, "src", mixer->priv->videomixer, GST_OBJECT_NAME(data->video_mixer_pad));
+  data->tee_sink_pad = gst_element_get_static_pad(data->tee, "sink");
+  res = gst_element_link_pads(data->capsfilter, NULL, data->tee, GST_OBJECT_NAME(data->tee_sink_pad));
   if(!res){
-    GST_ERROR("gst_mnscmixer_port_data_create10");
+    GST_ERROR("gst_mnscmixer_port_data_create connection capsfilter - tee");
   }
+
+  GstPad* tee_src = gst_element_get_request_pad(data->tee, "src_%u");
+  res = gst_element_link_pads(data->tee, GST_OBJECT_NAME(tee_src), data->fakesink, "sink");
+  if(!res){
+    GST_ERROR("gst_mnscmixer_port_data_create connection tee - fakesink");
+  }
+  g_object_unref (tee_src);
+
+  data->link_probe_id = gst_pad_add_probe(data->tee_sink_pad, GST_PAD_PROBE_TYPE_EVENT_DOWNSTREAM | GST_PAD_PROBE_TYPE_BLOCK, (GstPadProbeCallback)link_to_videomixer, GST_MNSCMIXER_REF (data), (GDestroyNotify)kms_ref_struct_unref);
+
+  //  data->video_mixer_pad = gst_element_get_request_pad(mixer->priv->videomixer, "sink_%u");
+  //  if(data->video_mixer_pad == NULL){
+  //    GST_ERROR("gst_mnscmixer_port_data_create9");
+  //  }
+  //
+  //  res = gst_element_link_pads(data->capsfilter, "src", mixer->priv->videomixer, GST_OBJECT_NAME(data->video_mixer_pad));
+  //  if(!res){
+  //    GST_ERROR("gst_mnscmixer_port_data_create10");
+  //  }
 
   return data;
 }
@@ -385,7 +551,7 @@ static gint gst_mnscmixer_handle_port(KmsBaseHub* mixer, GstElement* mixer_end_p
   port_data = gst_mnscmixer_port_data_create(self, port_id);
   port_data->input = TRUE;
   g_hash_table_insert(self->priv->ports, create_gint(port_id), port_data);
-  self->priv->n_elems++;
+  //  self->priv->n_elems++;
   self->priv->focus = 0;
   gst_mnscmixer_recalculate_sizes_a(self);
   GST_MNSCMIXER_UNLOCK (self);

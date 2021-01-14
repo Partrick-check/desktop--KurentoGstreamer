@@ -2,7 +2,7 @@
 ea4591b23af8a1b0d90c33300c3d4fb2  usr/include/kurento/modules/mnscmixer/mnscmixerImpl.hpp
 cce83fad9d03b96ee28fe4b041d6bc66  usr/include/kurento/modules/mnscmixer/mnscmixerImplFactory.hpp
 f461ea0203db6420b74257beb8f3ccd9  usr/lib/x86_64-linux-gnu/pkgconfig/kmsmnscmixer.pc
-d6187074bd51069c89937ed42017cd46  usr/share/cmake-3.10/Modules/FindKMSMNSCMIXER.cmake
-0cbbd5b5808c7f11df58db8ad2cf4287  usr/share/doc/mnscmixer-dev/changelog.gz
+7ed10409f25ebb574716688e638e8a28  usr/share/cmake-3.10/Modules/FindKMSMNSCMIXER.cmake
+ac7e5cacf4af455d47fae288a56c78cc  usr/share/doc/mnscmixer-dev/changelog.gz
 d41d8cd98f00b204e9800998ecf8427e  usr/share/doc/mnscmixer-dev/copyright
 7bc2e93e18d8663d5d64f1f146d364a9  usr/share/kurento/modules/mnscmixer.kmd.json
