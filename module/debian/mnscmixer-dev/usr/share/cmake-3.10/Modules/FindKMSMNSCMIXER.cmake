@@ -5,10 +5,10 @@
 #
 #=============================================================================
 
-set(PACKAGE_VERSION "0.0.1~3.g9967f42")
+set(PACKAGE_VERSION "0.0.1~4.g1080586")
 set(KMSMNSCMIXER_VERSION ${PACKAGE_VERSION})
 
-message (STATUS "Looking for KMSMNSCMIXER: 0.0.1~3.g9967f42")
+message (STATUS "Looking for KMSMNSCMIXER: 0.0.1~4.g1080586")
 
 include (GenericFind)
 

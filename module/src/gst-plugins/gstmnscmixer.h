@@ -34,7 +34,7 @@ struct _Gstmnscmixer{
 
 struct _GstmnscmixerClass{
   KmsBaseHubClass parent_class;
-  gboolean (*focus) (int port_id, int param);
+  gboolean (*focus)(Gstmnscmixer* self, guint sink_id, guint param);
 };
 
 GType gst_mnscmixer_get_type (void);

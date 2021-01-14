@@ -1,10 +1,10 @@
 Package: mnscmixer-dev
 Source: mnscmixer
-Version: 0.0.1~rc1.18.04~20210113111508.gbp9967f4
+Version: 0.0.1~rc1.18.04~20210114085356.gbp108058
 Architecture: amd64
 Maintainer: Maintainer Name <maintainer.name@example.com>
 Installed-Size: 33
-Depends: mnscmixer (= 0.0.1~rc1.18.04~20210113111508.gbp9967f4), kms-core-dev, kms-elements-dev, kms-filters-dev, libopencv-dev
+Depends: mnscmixer (= 0.0.1~rc1.18.04~20210114085356.gbp108058), kms-core-dev, kms-elements-dev, kms-filters-dev, libopencv-dev
 Section: libdevel
 Priority: optional
 Homepage: https://www.example.com
