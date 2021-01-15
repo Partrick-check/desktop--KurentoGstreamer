@@ -1,13 +1,13 @@
 Package: mnscmixer-dbgsym
 Package-Type: ddeb
 Source: mnscmixer
-Version: 0.0.1~rc1.18.04~20210114153309.gbpbd1a5a
+Version: 0.0.1~rc1.18.04~20210115153404.gbp7a62c0
 Auto-Built-Package: debug-symbols
 Architecture: amd64
 Maintainer: Maintainer Name <maintainer.name@example.com>
 Installed-Size: 403
-Depends: mnscmixer (= 0.0.1~rc1.18.04~20210114153309.gbpbd1a5a)
+Depends: mnscmixer (= 0.0.1~rc1.18.04~20210115153404.gbp7a62c0)
 Section: debug
 Priority: optional
 Description: debug symbols for mnscmixer
-Build-Ids: 522e3217901f0bc3dd68d52ef7a5dfea6dbc1bbd c0aed2cb8f97c4d38e50e49d5725c4cdadb5d101 c5b2ad773fe542bac9b88318af276b13cf72f066
+Build-Ids: 583a378086a679a2adc7449271f3c606d763a964 ab99af1637dbc7a903d16eb1253e076e2b182101 c0aed2cb8f97c4d38e50e49d5725c4cdadb5d101

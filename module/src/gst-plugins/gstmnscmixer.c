@@ -7,14 +7,12 @@
 #include <kurento/commons/kms-core-marshal.h>
 #include <math.h>
 
-//#include <fstream>
-
 #define GST_MNSCMIXER_LOCK(mixer) (g_rec_mutex_lock(&((Gstmnscmixer*)(mixer))->priv->mutex))
 #define GST_MNSCMIXER_UNLOCK(mixer) (g_rec_mutex_unlock(&((Gstmnscmixer*)(mixer))->priv->mutex))
 
 GST_DEBUG_CATEGORY_STATIC(gst_mnscmixer_debug_category);
 #define GST_CAT_DEFAULT gst_mnscmixer_debug_category
-#define LATENCY 600             //ms
+#define LATENCY 600
 #define PLUGIN_NAME "mnscmixer"
 
 #define GST_MNSCMIXER_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE((obj), GST_TYPE_MNSCMIXER, gst_mnscmixer_Private))
@@ -32,7 +30,7 @@ struct _gst_mnscmixer_Private{
   gint output_width, output_height;
 };
 
-G_DEFINE_TYPE_WITH_CODE (Gstmnscmixer, gst_mnscmixer, KMS_TYPE_BASE_HUB, GST_DEBUG_CATEGORY_INIT(gst_mnscmixer_debug_category, PLUGIN_NAME, 0, "debug category for mnscmixer element"));
+G_DEFINE_TYPE_WITH_CODE(Gstmnscmixer, gst_mnscmixer, KMS_TYPE_BASE_HUB, GST_DEBUG_CATEGORY_INIT(gst_mnscmixer_debug_category, PLUGIN_NAME, 0, "debug category for mnscmixer element"));
 
 enum
   {
@@ -70,11 +68,11 @@ static void gst_destroy_mncsmixer_data(gst_mnscmixer_Data * data){
 static gst_mnscmixer_Data *create_gst_mnscmixer_data(){
   gst_mnscmixer_Data* data;
   data = g_slice_new0(gst_mnscmixer_Data);
-  kms_ref_struct_init (KMS_REF_STRUCT_CAST(data), (GDestroyNotify)gst_destroy_mncsmixer_data);
+  kms_ref_struct_init(KMS_REF_STRUCT_CAST(data), (GDestroyNotify)gst_destroy_mncsmixer_data);
   return data;
 }
 
-static gint compare_port_data (gconstpointer a, gconstpointer b){
+static gint compare_port_data(gconstpointer a, gconstpointer b){
   gst_mnscmixer_Data* port_data_a = (gst_mnscmixer_Data*)a;
   gst_mnscmixer_Data* port_data_b = (gst_mnscmixer_Data*)b;
   return port_data_a->id-port_data_b->id;
@@ -87,27 +85,27 @@ static void gst_mnscmixer_recalculate_sizes(gpointer data){
   gint width, height, top, left, counter, n_columns, n_rows;
   GList *l;
   GList *values = g_hash_table_get_values(self->priv->ports);
-  if (self->priv->n_elems <= 0) {
+  if(self->priv->n_elems <= 0){
     return;
   }
   GST_DEBUG("gst_mnscmixer_recalculate_sizes2");
   counter = 0;
   values = g_list_sort(values, compare_port_data);
-  n_columns = (gint) ceil(sqrt (self->priv->n_elems));
-  n_rows = (gint) ceil((float) self->priv->n_elems / (float) n_columns);
+  n_columns = (gint) ceil(sqrt(self->priv->n_elems));
+  n_rows = (gint) ceil((float)self->priv->n_elems / (float)n_columns);
   GST_DEBUG_OBJECT(self, "columns %d rows %d", n_columns, n_rows);
   width = self->priv->output_width / n_columns;
   height = self->priv->output_height / n_rows;
-  for (l = values; l != NULL; l = l->next) {
+  for(l = values; l != NULL; l = l->next){
     gst_mnscmixer_Data* port_data = l->data;
-    if (port_data->input == FALSE) {
+    if(port_data->input == FALSE){
       continue;
     }
     if(self->priv->n_elems == 2){
-      g_object_set (G_OBJECT(port_data->videocrop), "left", self->priv->output_width/4, "right", self->priv->output_width/4, NULL);
+      g_object_set(G_OBJECT(port_data->videocrop), "left", self->priv->output_width/4, "right", self->priv->output_width/4, NULL);
     }
     else{
-      g_object_set (G_OBJECT(port_data->videocrop), "left", 0, "right", 0, NULL);
+      g_object_set(G_OBJECT(port_data->videocrop), "left", 0, "right", 0, NULL);
     }
     filtercaps = gst_caps_new_simple("video/x-raw", "width", G_TYPE_INT, width, "height", G_TYPE_INT, height, "pixel-aspect-ratio", GST_TYPE_FRACTION, 1, 1, NULL);
     g_object_set(port_data->capsfilter, "caps", filtercaps, NULL);
@@ -132,7 +130,7 @@ static void gst_mnscmixer_recalculate_sizes_a(gpointer data){
   gint width, height, top, left, counter, counter2, n_columns, n_rows;
   GList *l;
   GList *values = g_hash_table_get_values(self->priv->ports);
-  if (self->priv->n_elems <= 0) {
+  if(self->priv->n_elems <= 0){
     return;
   }
   GST_DEBUG("gst_mnscmixer_recalculate_sizes2");
@@ -144,12 +142,12 @@ static void gst_mnscmixer_recalculate_sizes_a(gpointer data){
   GST_DEBUG_OBJECT(self, "columns %d rows %d", n_columns, n_rows);
   width = self->priv->output_width / 4;
   height = self->priv->output_height / 4;
-  for (l = values; l != NULL; l = l->next) {
+  for(l = values; l != NULL; l = l->next){
     gst_mnscmixer_Data* port_data = l->data;
-    if (port_data->input == FALSE) {
+    if(port_data->input == FALSE){
       continue;
     }
-    g_object_set (G_OBJECT(port_data->videocrop), "left", 0, "right", 0, NULL);
+    g_object_set(G_OBJECT(port_data->videocrop), "left", 0, "right", 0, NULL);
     if(counter == (self->priv->focus -1)){
       filtercaps = gst_caps_new_simple("video/x-raw", "width", G_TYPE_INT, self->priv->output_width, "height", G_TYPE_INT, self->priv->output_height, "pixel-aspect-ratio", GST_TYPE_FRACTION, 1, 1, NULL);
       g_object_set(port_data->capsfilter, "caps", filtercaps, NULL);
@@ -189,7 +187,7 @@ static gboolean remove_elements_from_pipeline(gst_mnscmixer_Data* port_data){
   }
   gst_bin_remove_many(GST_BIN(self), g_object_ref(port_data->capsfilter), g_object_ref(port_data->tee), g_object_ref(port_data->fakesink), g_object_ref(port_data->videocrop), NULL);
 
-  kms_base_hub_unlink_video_src(KMS_BASE_HUB (self), port_data->id);
+  kms_base_hub_unlink_video_src(KMS_BASE_HUB(self), port_data->id);
   kms_base_hub_unlink_data_src(KMS_BASE_HUB (self), port_data->id);
   GST_MNSCMIXER_UNLOCK(self);
   gst_element_set_state(port_data->capsfilter, GST_STATE_NULL);
@@ -585,8 +583,8 @@ static void gst_mnscmixer_init (Gstmnscmixer *self){
   self->priv = GST_MNSCMIXER_GET_PRIVATE(self);
   g_rec_mutex_init(&self->priv->mutex);
   self->priv->ports = g_hash_table_new_full(g_int_hash, g_int_equal, release_gint, gst_mnscmixer_port_data_destroy);
-  self->priv->output_height = 600;
-  self->priv->output_width = 800;
+  self->priv->output_height = 720;
+  self->priv->output_width = 1280;
   self->priv->n_elems = 0;
   self->priv->focus = 0;
   self->priv->loop = kms_loop_new ();
