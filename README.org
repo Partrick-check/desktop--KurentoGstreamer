@@ -10,7 +10,7 @@
 * installing
 
 ** server
-- install =mnscmixer_0.0.1~rc1.18.04~20210112195349.gbp5cc105_amd64.deb= from =module= folder
+- install included =deb= from =module= folder
 - restart KMS
 
 *** check
@@ -36,3 +36,18 @@ npm start
 goto to =https://127.0.0.1:8080/= in browser
 
 NOTE: to add more source streams open =https://<client IP>:8080/= on other computer
+
+* building
+
+** install requirements
+#+BEGIN_SRC
+apt install devscripts
+apt install equiv
+apt install git-buildpackage
+#+END_SRC
+
+** building
+#+BEGIN_SRC
+chmod a+x ./build.sh
+sudo ./build.sh
+#+END_SRC
