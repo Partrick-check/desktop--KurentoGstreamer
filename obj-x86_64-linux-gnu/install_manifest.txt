@@ -1,0 +1,12 @@
+/usr/lib/x86_64-linux-gnu/libkmsmnscmixerinterface.a
+/usr/include/kurento/modules/mnscmixer/mnscmixer.hpp
+/usr/lib/x86_64-linux-gnu/pkgconfig/kmsmnscmixer.pc
+/usr/lib/x86_64-linux-gnu/libkmsmnscmixerimpl.so.0.0.1~7.ga0e3f68
+/usr/lib/x86_64-linux-gnu/libkmsmnscmixerimpl.so.0
+/usr/lib/x86_64-linux-gnu/libkmsmnscmixerimpl.so
+/usr/include/kurento/modules/mnscmixer/mnscmixerImpl.hpp
+/usr/include/kurento/modules/mnscmixer/mnscmixerImplFactory.hpp
+/usr/lib/x86_64-linux-gnu/kurento/modules/libkmsmnscmixermodule.so
+/usr/share/cmake-3.10/Modules/FindKMSMNSCMIXER.cmake
+/usr/share/kurento/modules/mnscmixer.kmd.json
+/usr/lib/x86_64-linux-gnu/gstreamer-1.5/libmnscmixer.so

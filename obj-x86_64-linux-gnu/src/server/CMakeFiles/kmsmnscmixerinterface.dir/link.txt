@@ -1,0 +1,2 @@
+/usr/bin/ar qc libkmsmnscmixerinterface.a  CMakeFiles/kmsmnscmixerinterface.dir/interface/generated-cpp/mnscmixerInternal.cpp.o CMakeFiles/kmsmnscmixerinterface.dir/interface/generated-cpp/mnscmixer.cpp.o
+/usr/bin/ranlib libkmsmnscmixerinterface.a

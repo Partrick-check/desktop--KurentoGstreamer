@@ -1,0 +1,5 @@
+773e36930525f38bf584520a38c2f4f9  usr/lib/x86_64-linux-gnu/gstreamer-1.5/libmnscmixer.so
+bf3ab2be25d124fd2b3796c8f3323d05  usr/lib/x86_64-linux-gnu/kurento/modules/libkmsmnscmixermodule.so
+c9b1049c150fdf04269086bdcfcd5012  usr/lib/x86_64-linux-gnu/libkmsmnscmixerimpl.so.0.0.1~7.ga0e3f68
+8a4c07d2057a474dcb2de5436ffadd71  usr/share/doc/mnscmixer/changelog.gz
+d41d8cd98f00b204e9800998ecf8427e  usr/share/doc/mnscmixer/copyright
