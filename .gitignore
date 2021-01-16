@@ -1,3 +1,13 @@
-*.avi
-*.*~
-*.*#
+build/
+debian/mnscmixer
+debian/.debhelper
+debian/files
+debian/mnscmixer-dev.debhelper.log
+debian/mnscmixer-dev.substvars
+debian/mnscmixer-dev
+debian/mnscmixer.debhelper.log
+debian/mnscmixer.substvars
+debian/tmp
+*.ddeb
+*.deb
+obj*/
