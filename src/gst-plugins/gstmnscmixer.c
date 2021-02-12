@@ -1,3 +1,7 @@
+//
+// (c) Mnatsakanov Andrey 2021
+//
+
 #include "gstmnscmixer.h"
 
 #include <kurento/commons/kmsagnosticcaps.h>
@@ -17,7 +21,19 @@ GST_DEBUG_CATEGORY_STATIC(gst_mnscmixer_debug_category);
 
 #define GST_MNSCMIXER_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE((obj), GST_TYPE_MNSCMIXER, gst_mnscmixer_Private))
 
-static GstStaticPadTemplate sink_factory = GST_STATIC_PAD_TEMPLATE("sink_", GST_PAD_SINK, GST_PAD_SOMETIMES, GST_STATIC_CAPS(KMS_AGNOSTIC_RAW_VIDEO_CAPS));
+#define AUDIO_SINK_PAD_PREFIX_COMP "audio_sink_"
+#define VIDEO_SINK_PAD_PREFIX_COMP "video_sink_"
+#define AUDIO_SRC_PAD_PREFIX_COMP "audio_src_"
+#define VIDEO_SRC_PAD_PREFIX_COMP "video_src_"
+#define AUDIO_SINK_PAD_NAME_COMP AUDIO_SINK_PAD_PREFIX_COMP "%u"
+#define VIDEO_SINK_PAD_NAME_COMP VIDEO_SINK_PAD_PREFIX_COMP "%u"
+#define AUDIO_SRC_PAD_NAME_COMP AUDIO_SRC_PAD_PREFIX_COMP "%u"
+#define VIDEO_SRC_PAD_NAME_COMP VIDEO_SRC_PAD_PREFIX_COMP "%u"
+
+static GstStaticPadTemplate audio_sink_factory = GST_STATIC_PAD_TEMPLATE(AUDIO_SINK_PAD_NAME_COMP, GST_PAD_SINK, GST_PAD_SOMETIMES, GST_STATIC_CAPS (KMS_AGNOSTIC_RAW_AUDIO_CAPS));
+static GstStaticPadTemplate video_sink_factory = GST_STATIC_PAD_TEMPLATE(VIDEO_SINK_PAD_NAME_COMP, GST_PAD_SINK, GST_PAD_SOMETIMES, GST_STATIC_CAPS (KMS_AGNOSTIC_RAW_VIDEO_CAPS));
+static GstStaticPadTemplate audio_src_factory = GST_STATIC_PAD_TEMPLATE(AUDIO_SRC_PAD_NAME_COMP, GST_PAD_SRC, GST_PAD_SOMETIMES, GST_STATIC_CAPS (KMS_AGNOSTIC_RAW_AUDIO_CAPS));
+static GstStaticPadTemplate video_src_factory = GST_STATIC_PAD_TEMPLATE(VIDEO_SRC_PAD_NAME_COMP, GST_PAD_SRC, GST_PAD_SOMETIMES, GST_STATIC_CAPS (KMS_AGNOSTIC_RAW_VIDEO_CAPS));
 
 struct _gst_mnscmixer_Private{
   GstElement *videomixer;
@@ -332,7 +348,7 @@ static void gst_mnscmixer_port_data_destroy(gpointer data){
   }
   gchar* padname = g_strdup_printf (AUDIO_SINK_PAD, port_data->id);
   GstPad* audiosink = gst_element_get_static_pad (self->priv->audiomixer, padname);
-  gst_element_release_request_pad (self->priv->audiomixer, audiosink);
+  gst_element_release_request_pad(self->priv->audiomixer, audiosink);
   gst_object_unref (audiosink);
   g_free (padname);
 }
@@ -482,12 +498,12 @@ static void pad_added_cb(GstElement * element, GstPad * pad, gpointer data){
   Gstmnscmixer *self = GST_MNSCMIXER(data);
   if(gst_pad_get_direction(pad) != GST_PAD_SRC)
     return;
-  gint id = get_stream_id_from_padname (GST_OBJECT_NAME (pad));
+  gint id = get_stream_id_from_padname(GST_OBJECT_NAME (pad));
   if (id < 0){
     GST_ERROR_OBJECT(self, "Invalid HubPort for %" GST_PTR_FORMAT, pad);
     return;
   }
-  kms_base_hub_link_audio_src(KMS_BASE_HUB(self), id, self->priv->audiomixer, GST_OBJECT_NAME (pad), TRUE);
+  kms_base_hub_link_audio_src(KMS_BASE_HUB(self), id, self->priv->audiomixer, GST_OBJECT_NAME(pad), TRUE);
 }
 
 static void pad_removed_cb(GstElement * element, GstPad * pad, gpointer data){
@@ -598,11 +614,12 @@ static void gst_mnscmixer_class_init(GstmnscmixerClass *klass){
   gobject_class->finalize = GST_DEBUG_FUNCPTR(gst_mnscmixer_finalize);
   base_hub_class->handle_port = GST_DEBUG_FUNCPTR(gst_mnscmixer_handle_port);
   base_hub_class->unhandle_port = GST_DEBUG_FUNCPTR(gst_mnscmixer_unhandle_port);
-  gst_element_class_add_pad_template(gstelement_class, gst_static_pad_template_get(&sink_factory));
+  gst_element_class_add_pad_template(gstelement_class, gst_static_pad_template_get (&audio_src_factory));
+  gst_element_class_add_pad_template(gstelement_class, gst_static_pad_template_get (&video_src_factory));
+  gst_element_class_add_pad_template(gstelement_class, gst_static_pad_template_get (&audio_sink_factory));
+  gst_element_class_add_pad_template(gstelement_class, gst_static_pad_template_get (&video_sink_factory));
   klass->focus = GST_DEBUG_FUNCPTR(gst_mnscmixer_focus);
-
   obj_signals[SIGNAL_FOCUS] = g_signal_new ("focus", G_TYPE_FROM_CLASS (klass), G_SIGNAL_ACTION | G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GstmnscmixerClass, focus), NULL, NULL, __kms_core_marshal_BOOLEAN__UINT_UINT, G_TYPE_BOOLEAN, 2, G_TYPE_UINT, G_TYPE_UINT);
-
   g_type_class_add_private(klass, sizeof(gst_mnscmixer_Private));
 }
 

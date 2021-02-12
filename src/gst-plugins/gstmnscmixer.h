@@ -1,20 +1,17 @@
+//
+// (c) Mnatsakanov Andrey 2021
+//
 #ifndef _GST_MNSCMIXER_H_
 #define _GST_MNSCMIXER_H_
 
 #include <kurento/commons/kmsbasehub.h>
 
-#define AUDIO_SINK_PAD_PREFIX  "audio_sink_"
-#define AUDIO_SRC_PAD_PREFIX  "audio_src_"
+#define AUDIO_SINK_PAD_PREFIX  "sink_"
+#define AUDIO_SRC_PAD_PREFIX  "src_"
 #define LENGTH_AUDIO_SINK_PAD_PREFIX (sizeof(AUDIO_SINK_PAD_PREFIX) - 1)
 #define LENGTH_AUDIO_SRC_PAD_PREFIX (sizeof(AUDIO_SRC_PAD_PREFIX) - 1)
 #define AUDIO_SINK_PAD AUDIO_SINK_PAD_PREFIX "%u"
 #define AUDIO_SRC_PAD AUDIO_SRC_PAD_PREFIX "%u"
-#define VIDEO_SINK_PAD_PREFIX  "video_sink_"
-#define VIDEO_SRC_PAD_PREFIX  "video_src_"
-#define LENGTH_VIDEO_SINK_PAD_PREFIX (sizeof(VIDEO_SINK_PAD_PREFIX) - 1)
-#define LENGTH_VIDEO_SRC_PAD_PREFIX (sizeof(VIDEO_SRC_PAD_PREFIX) - 1)
-#define VIDEO_SINK_PAD VIDEO_SINK_PAD_PREFIX "%u"
-#define VIDEO_SRC_PAD VIDEO_SRC_PAD_PREFIX "%u"
 
 G_BEGIN_DECLS
 
