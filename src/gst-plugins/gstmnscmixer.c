@@ -198,8 +198,8 @@ static gboolean remove_elements_from_pipeline(gst_mnscmixer_Data* port_data){
     port_data->latency_probe_id = 0;
   }
   if(port_data->video_mixer_pad != NULL){
-    gst_element_release_request_pad(self->priv->videomixer, port_data->video_mixer_pad);
-    g_object_unref(port_data->video_mixer_pad);
+    //    gst_element_release_request_pad(self->priv->videomixer, port_data->video_mixer_pad);
+    //    g_object_unref(port_data->video_mixer_pad);
     port_data->video_mixer_pad = NULL;
   }
   gst_bin_remove_many(GST_BIN(self), g_object_ref(port_data->capsfilter), g_object_ref(port_data->tee), g_object_ref(port_data->fakesink), g_object_ref(port_data->videocrop), NULL);
@@ -250,8 +250,8 @@ static GstPadProbeReturn cb_EOS_received(GstPad* pad, GstPadProbeInfo* info, gpo
 
   GST_MNSCMIXER_UNLOCK(self);
 
-  GstEvent* event = gst_event_new_eos();
-  gst_pad_send_event(pad, event);
+  //  GstEvent* event = gst_event_new_eos();
+  //  gst_pad_send_event(pad, event);
   kms_loop_idle_add_full(self->priv->loop, G_PRIORITY_DEFAULT, (GSourceFunc)remove_elements_from_pipeline, GST_MNSCMIXER_REF(port_data), (GDestroyNotify)kms_ref_struct_unref);
   return GST_PAD_PROBE_OK;
 }
